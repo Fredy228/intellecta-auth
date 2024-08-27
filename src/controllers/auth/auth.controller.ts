@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import * as process from 'process';
+import * as dotenv from 'dotenv';
 import { ApiOperation, ApiResponse, ApiTags, OmitType } from '@nestjs/swagger';
 import { User, UserDevices } from 'lib-intellecta-entity';
 
@@ -28,10 +29,12 @@ import { AuthService } from './auth.service';
 import { BodyValidationPipe } from '../../pipes/validator-body.pipe';
 import { restorePassSchema, userCreateSchema } from '../../joi/user.schema';
 
+dotenv.config();
+
 const CLIENT_URL = process.env.CLIENT_URL;
 const MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 
-@Controller('api/auth')
+@Controller('auth')
 @ApiTags('Authorization')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

@@ -25,13 +25,17 @@ export class ProtectRefreshMiddleware implements NestMiddleware {
   ) {
     const token = req.cookies.refreshToken;
 
+    console.log('refreshToken', token);
+
     if (!token)
       throw new CustomException(HttpStatus.UNAUTHORIZED, 'Not authorized');
 
     let decodedToken: { id: any };
     try {
       decodedToken = await this.jwtService.verify(token);
+      console.log('decodedToken', decodedToken);
     } catch (error) {
+      console.error(error);
       throw new CustomException(HttpStatus.UNAUTHORIZED, 'Not authorized');
     }
 
@@ -45,6 +49,7 @@ export class ProtectRefreshMiddleware implements NestMiddleware {
         email: true,
       },
     });
+    console.log('user', currentUser);
     if (!currentUser)
       throw new CustomException(HttpStatus.UNAUTHORIZED, 'Not authorized');
 

@@ -1,30 +1,31 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'lib-intellecta-entity';
-
-import { CustomException } from './custom-exception';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CustomRMQException } from '../../services/custom-exception';
 
 @Injectable()
-export class AuthMiddlewareService {
+export class ProtectService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
-  checkAccessToken(authorization: string | undefined): string {
-    return authorization?.startsWith('Bearer') && authorization?.split(' ')[1];
-  }
+  async checkAuth(token: string): Promise<User> {
+    if (!token)
+      throw new CustomRMQException(HttpStatus.BAD_REQUEST, 'Not token');
 
-  async findUser(token: string): Promise<User> {
+    console.log('token', token);
+
     let decodedToken: { id: any };
     try {
       decodedToken = await this.jwtService.verify(token);
       console.log('decodedToken', decodedToken);
     } catch (error) {
-      throw new CustomException(HttpStatus.UNAUTHORIZED, 'Not authorized');
+      console.error(error);
+      throw new CustomRMQException(HttpStatus.UNAUTHORIZED, 'Not authorized');
     }
 
     const currentUser = await this.usersRepository.findOne({
@@ -51,8 +52,10 @@ export class AuthMiddlewareService {
       },
     });
 
+    console.log('user', currentUser);
+
     if (!currentUser)
-      throw new CustomException(HttpStatus.UNAUTHORIZED, 'Not authorized');
+      throw new CustomRMQException(HttpStatus.UNAUTHORIZED, 'Not authorized');
 
     return currentUser;
   }

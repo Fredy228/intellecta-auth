@@ -8,7 +8,6 @@ import { AuthService } from './auth.service';
 import { ProtectRefreshMiddleware } from '../../middlewares/protect-refresh.middleware';
 import { UserAgentMiddleware } from '../../middlewares/user-agent.middleware';
 import { GoogleStrategy } from './google.strategy';
-import { AuthMiddlewareService } from '../../services/auth-middleware.service';
 
 @Module({
   imports: [
@@ -19,37 +18,37 @@ import { AuthMiddlewareService } from '../../services/auth-middleware.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy, AuthMiddlewareService],
+  providers: [AuthService, GoogleStrategy],
   exports: [PassportModule],
 })
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ProtectRefreshMiddleware).forRoutes(
       {
-        path: '/api/auth/refresh',
+        path: '/auth/refresh',
         method: RequestMethod.GET,
       },
       {
-        path: '/api/auth/logout',
+        path: '/auth/logout',
         method: RequestMethod.GET,
       },
     );
 
     consumer.apply(UserAgentMiddleware).forRoutes(
       {
-        path: '/api/auth/google/callback',
+        path: '/auth/google/callback',
         method: RequestMethod.GET,
       },
       {
-        path: '/api/auth/register',
+        path: '/auth/register',
         method: RequestMethod.POST,
       },
       {
-        path: '/api/auth/login',
+        path: '/auth/login',
         method: RequestMethod.POST,
       },
       {
-        path: '/api/auth/refresh',
+        path: '/auth/refresh',
         method: RequestMethod.GET,
       },
     );
