@@ -37,7 +37,7 @@
     "dotenv": "^16.4.5",
     "express-useragent": "^1.0.15",
     "joi": "^17.13.3",
-    "lib-intellecta-entity": "^1.0.4",
+    "lib-intellecta-entity": "^1.0.18",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.12.0",

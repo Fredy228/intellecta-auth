@@ -76,7 +76,6 @@ export class AuthService {
     const isValidPass = await checkPassword(password, user.password);
 
     if (!isValidPass) {
-      console.log(user?.security);
       if (
         user?.security?.login_attempts === 5 ||
         user?.security?.login_attempts === 10

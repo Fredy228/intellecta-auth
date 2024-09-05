@@ -1,25 +1,24 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import * as process from 'process';
 import {
-  Faculty,
-  Group,
-  Icon,
-  Moderator,
-  Owner,
-  Profile,
-  Student,
-  Subject,
-  SupportMessage,
-  Teacher,
-  University,
   User,
   UserDevices,
+  Profile,
+  Student,
+  Teacher,
+  Owner,
+  Moderator,
+  University,
+  Faculty,
+  Subject,
+  Group,
+  SupportMessage,
 } from 'lib-intellecta-entity';
+import { DataSource } from 'typeorm';
 
 dotenv.config();
 
-const config: TypeOrmModuleOptions = {
+const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
@@ -30,19 +29,30 @@ const config: TypeOrmModuleOptions = {
     User,
     UserDevices,
     Profile,
-    Moderator,
-    Owner,
-    Teacher,
     Student,
+    Teacher,
+    Owner,
+    Moderator,
     University,
     Subject,
     Faculty,
     Group,
-    Icon,
     SupportMessage,
   ],
+  // entities: [
+  //   __dirname + '/node_modules/lib-intellecta-entity/dist/**/*.entity{.ts,.js}',
+  // ],
   synchronize: false,
   logging: !Number(process.env.PRODUCTION),
-};
+  cache: false,
+});
 
-export default config;
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!');
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization', err);
+  });
+
+export default AppDataSource;
