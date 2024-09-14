@@ -211,6 +211,8 @@ export class AuthService {
   ): Promise<TokenType> {
     const deviceModel = `${userAgent?.platform} ${userAgent?.os} ${userAgent?.browser}`;
 
+    console.log('deviceModel', deviceModel);
+
     if (deviceModel !== currentDevice.deviceModel)
       throw new CustomException(
         HttpStatus.UNAUTHORIZED,
